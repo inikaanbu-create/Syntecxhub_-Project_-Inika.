@@ -1,0 +1,27 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("owid-covid-data.csv")
+
+# Select countries
+countries = ["India", "United States", "Brazil"]
+df = df[df["location"].isin(countries)]
+
+# Convert date
+df["date"] = pd.to_datetime(df["date"])
+
+# Daily cases
+df["new_cases"] = df["new_cases"].fillna(0)
+
+# Rolling average
+df["rolling_avg"] = df.groupby("location")["new_cases"].transform(lambda x: x.rolling(7).mean())
+
+# Plot
+for country in countries:
+    temp = df[df["location"]==country]
+    plt.plot(temp["date"], temp["rolling_avg"], label=country)
+
+plt.legend()
+plt.title("7-Day Rolling Average of COVID Cases")
+plt.show()
