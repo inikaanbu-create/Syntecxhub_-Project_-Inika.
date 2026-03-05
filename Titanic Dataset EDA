@@ -1,0 +1,43 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = sns.load_dataset("titanic")
+
+# Basic inspection
+print(df.head())
+print(df.info())
+print(df.isnull().sum())
+
+# Survival rate by sex
+survival_sex = df.groupby("sex")["survived"].mean()
+print(survival_sex)
+
+# Survival rate by class
+survival_class = df.groupby("pclass")["survived"].mean()
+print(survival_class)
+
+# Create age buckets
+df["age_group"] = pd.cut(df["age"],
+                         bins=[0,12,18,35,60,100],
+                         labels=["Child","Teen","Young Adult","Adult","Senior"])
+
+survival_age = df.groupby("age_group")["survived"].mean()
+print(survival_age)
+
+# Visualization
+plt.figure()
+sns.barplot(x="sex", y="survived", data=df)
+plt.title("Survival Rate by Gender")
+plt.show()
+
+plt.figure()
+sns.barplot(x="pclass", y="survived", data=df)
+plt.title("Survival Rate by Class")
+plt.show()
+
+plt.figure()
+sns.boxplot(x="survived", y="age", data=df)
+plt.title("Age Distribution by Survival")
+plt.show()
