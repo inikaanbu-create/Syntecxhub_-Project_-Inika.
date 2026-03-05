@@ -1,0 +1,31 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset
+df = pd.read_csv("netflix_titles.csv")
+
+print(df.head())
+print(df.isnull().sum())
+
+# Count by type
+type_count = df["type"].value_counts()
+print(type_count)
+
+# Year trend
+df["release_year"].value_counts().sort_index().plot()
+plt.title("Content Release Trend")
+plt.xlabel("Year")
+plt.ylabel("Count")
+plt.show()
+
+# Top genres
+df["listed_in"].str.split(", ").explode().value_counts().head(10).plot(kind="bar")
+plt.title("Top 10 Genres")
+plt.show()
+
+# Runtime distribution (Movies only)
+movies = df[df["type"]=="Movie"]
+movies["duration"].str.replace(" min","").astype(float).plot(kind="hist")
+plt.title("Movie Duration Distribution")
+plt.show()
